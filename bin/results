@@ -1,0 +1,21 @@
+#!/usr/bin/env ruby
+#
+# Copied this mostly from script/console. It loads your Ronin log into irb for you to analyze.
+#
+
+irb = RUBY_PLATFORM =~ /(:?mswin|mingw)/ ? 'irb.bat' : 'irb'
+
+require 'optparse'
+options = { :irb => irb }
+OptionParser.new do |opt|
+  opt.banner = "Usage: console [environment] [options]"
+  opt.on("--irb=[#{irb}]", 'Invoke a different irb.') { |v| options[:irb] = v }
+  opt.parse!(ARGV)
+end
+
+libs =  " -r irb/completion"
+libs << " -r vendor/plugins/ronin/lib/results_app"
+
+puts "Loading Ronin results (in the 'results' variable)"
+puts "Note: this does not load the Rails environment."
+exec "#{options[:irb]} #{libs} --simple-prompt"

@@ -1,0 +1,37 @@
+Ronin
+=====
+
+This is a quickly spun together plugin to measure the basic system memory of a Rails request 
+from start to finish. 
+
+Instructions:
+
+1) Set the Environment variable "RONIN" to "on" (on command-line, in config/environment.rb, etc.) 
+2) Ronin will automatically fire up and wrap your requests with a little helpful logging. The output
+is in a Ruby-style Hash:
+
+{ :growth => [PERCENTAGE OF CHANGE], :request_time => [TIME FOR REQUEST AS RECORDED BY RONIN], :min_rss => [LOWEST RSS SIZE], :max_rss => [HIGHEST RSS SIZE], :delta_rss => [SPAN OF RSS CHANGE], :uri => [URI PATH REQUESTED] }
+
+...so if you ever need to analyze the data collectively instead of just
+eyeing it, it's as easy as running irb or script/console and doing something like this:
+
+requests = open('log/ronin.log').read.split("\n").map { |line| eval line }
+
+
+Example
+=======
+
+Start up server: 
+  "RONIN=on script/server"
+
+Include in config/environments/*.rb: 
+  "ENV['RONIN'] = 'on'"
+
+And curl a request:
+
+curl -i http://my.application.and.stuff:3000/things.xml
+#=> { :growth => 0.01, :request_time => 2.300322, :min_rss => 34188, :max_rss => 34488, :delta_rss => 300, :uri => '/things.xml' }
+
+
+
+Copyright (c) 2007 Tieg Zaharia, released under the MIT license
